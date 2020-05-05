@@ -1,37 +1,24 @@
 package lt.bit.java2.model;
 
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 
 public class Employee {
+
     private Integer empNo;
     private String firstName;
     private String lastName;
     private String gender;
-//    private Date birthDate;
-//    private Date hireDate;
     private LocalDate birthDate;
     private LocalDate hireDate;
+
+    // employee --< salary
+    private List<Salary> salaries;
+
+
+
     public Integer getEmpNo() {
         return empNo;
-    }
-
-    public static Employee fromResultSet(ResultSet resultSet) {
-        try {
-            Employee employee = new Employee();
-            employee.setEmpNo(resultSet.getInt("emp_no"));
-            employee.setFirstName(resultSet.getString("first_name"));
-            employee.setLastName(resultSet.getString("last_name"));
-            employee.setGender(resultSet.getString("gender"));
-            employee.setBirthDate(resultSet.getDate("birth_date").toLocalDate());
-            employee.setHireDate(resultSet.getDate("hire_date").toLocalDate());
-            return employee;
-
-        } catch (SQLException e) {
-            return null;
-        }
     }
 
     public void setEmpNo(Integer empNo) {
@@ -76,5 +63,13 @@ public class Employee {
 
     public void setHireDate(LocalDate hireDate) {
         this.hireDate = hireDate;
+    }
+
+    public List<Salary> getSalaries() {
+        return salaries;
+    }
+
+    public void setSalaries(List<Salary> salaries) {
+        this.salaries = salaries;
     }
 }

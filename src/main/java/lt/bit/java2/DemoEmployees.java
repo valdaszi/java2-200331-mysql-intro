@@ -1,20 +1,13 @@
 package lt.bit.java2;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import lt.bit.java2.model.Employee;
+import lt.bit.java2.services.DBService;
+import lt.bit.java2.services.EmployeeMap;
 
-import javax.sql.DataSource;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class DemoEmployees {
 
@@ -94,46 +87,11 @@ public class DemoEmployees {
         System.out.println("Viso: " + count + " per " + time + "ms");
     }
 
-    static private Properties properties;
-    static {
-        properties = new Properties();
-        try {
-            // failas 'application.properties' ieskomas projekto katalogo virsuje,
-            // t.y. kataloge is kurio paleidziama programa
-            // InputStream is = new FileInputStream("application.properties");
 
-            InputStream is = DemoEmployees.class.getClassLoader().getResourceAsStream("application.properties");
-            properties.load(is);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(
-                properties.getProperty("db.url"),
-                properties.getProperty("db.user"),
-                properties.getProperty("db.password"));
-    }
-
-    private static DataSource dataSource;
-    static {
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(properties.getProperty("db.url"));
-        config.setUsername(properties.getProperty("db.user"));
-        config.setPassword(properties.getProperty("db.password"));
-        dataSource = new HikariDataSource(config);
-    }
-
-
-    static Connection getConnectionFromCP() throws SQLException {
-        return dataSource.getConnection();
-    }
 
     static List<Employee> getEmployees() {
         try (
-                Connection conn = getConnectionFromCP();  // 1 zingsnis
+                Connection conn = DBService.getConnectionFromCP();  // 1 zingsnis
                 PreparedStatement statement = conn.prepareStatement(
                         "SELECT * FROM employees LIMIT 100");
         )
@@ -141,7 +99,7 @@ public class DemoEmployees {
             try (ResultSet resultSet = statement.executeQuery()) { // 2 zingsnis
                 List<Employee> employees = new ArrayList<>();
                 while (resultSet.next()) {
-                    employees.add(Employee.fromResultSet(resultSet));   // 3 zingsnis
+                    employees.add(EmployeeMap.fromResultSet(resultSet));   // 3 zingsnis
                 }
                 return employees;
             }
@@ -154,7 +112,7 @@ public class DemoEmployees {
 
     static void getSalariesByEmp(int empNo, int limit) {
         try (
-                Connection conn = getConnection();  // 1 zingsnis
+                Connection conn = DBService.getConnection();  // 1 zingsnis
                 PreparedStatement statement = conn.prepareStatement(
                         "SELECT * FROM salaries WHERE emp_no = ? LIMIT ?");
                 )
@@ -182,7 +140,7 @@ public class DemoEmployees {
 
     static void updateEmployee(int empNo, String firstName, String lastName) {
         try (
-                Connection conn = getConnection();
+                Connection conn = DBService.getConnection();
                 PreparedStatement statement = conn.prepareStatement(
                         "UPDATE employees SET first_name=?, last_name=? WHERE emp_no=?");
         ) {
@@ -203,7 +161,7 @@ public class DemoEmployees {
 
     static void insertEmployee(Employee employee) {
         try (
-                Connection conn = getConnection();
+                Connection conn = DBService.getConnection();
                 PreparedStatement statement = conn.prepareStatement(
                         "INSERT employees(first_name, last_name, gender, birth_date, hire_date) VALUES(?,?,?,?,?)",
                         Statement.RETURN_GENERATED_KEYS);

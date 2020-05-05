@@ -19,8 +19,18 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
+
+    testCompile group: 'com.h2database', name: 'h2', version: '1.4.200'
 }
 
 test {
     useJUnitPlatform()
+}
+
+task customFatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'lt.bit.java2.DemoEmployees'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
