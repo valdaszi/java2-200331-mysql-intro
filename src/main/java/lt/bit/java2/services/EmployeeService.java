@@ -18,4 +18,12 @@ public class EmployeeService {
     }
 
 
+    // SELECT * FROM employees  LIMIT 5 OFFSET 10
+    // SELECT * FROM employees  LIMIT 10,5
+
+    // SELECT * FROM employees  LIMIT ? OFFSET ?
+    // 1? <= 10
+    // 2? <= 5
+
+
 }

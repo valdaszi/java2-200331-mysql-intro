@@ -24,7 +24,7 @@ public class EmployeeServiceTest {
         Connection connection = DBService.getConnectionFromCP();
 
         Statement stmt = connection.createStatement();
-        stmt.execute("drop table if exists employees");
+        // stmt.execute("drop table if exists employees");
         stmt.execute(
                 "create table employees (" +
                         " emp_no int," +
@@ -45,7 +45,7 @@ public class EmployeeServiceTest {
                         // TODO pabaigti
 
         );
-        stmt.execute("drop table if exists salaries");
+//        stmt.execute("drop table if exists salaries");
         stmt.execute(
                 "create table salaries (" +
                         " emp_no int," +
@@ -68,8 +68,12 @@ public class EmployeeServiceTest {
     }
 
     @AfterEach
-    void stop() {
-
+    void stop() throws SQLException {
+        Connection connection = DBService.getConnectionFromCP();
+        Statement stmt = connection.createStatement();
+        stmt.execute("drop table if exists employees");
+        stmt.execute("drop table if exists salaries");
+        connection.commit();
     }
 
     @Test
@@ -83,5 +87,10 @@ public class EmployeeServiceTest {
         assertNotNull(employees.get(0).getSalaries());
         assertEquals(2, employees.get(0).getSalaries().size());
         assertEquals(3, employees.get(1).getSalaries().size());
+    }
+
+    @Test
+    void ok() {
+        // visada OK :)
     }
 }
