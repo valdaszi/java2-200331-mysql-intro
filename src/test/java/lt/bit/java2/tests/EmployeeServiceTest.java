@@ -8,12 +8,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EmployeeServiceTest {
 
@@ -64,7 +64,7 @@ public class EmployeeServiceTest {
                         " (5, '2018-03-05', '9999-01-01', 1111)"
                         // TODO pabaigti
         );
-        connection.commit();
+        connection.close();
     }
 
     @AfterEach
@@ -73,7 +73,17 @@ public class EmployeeServiceTest {
         Statement stmt = connection.createStatement();
         stmt.execute("drop table if exists employees");
         stmt.execute("drop table if exists salaries");
-        connection.commit();
+        connection.close();
+    }
+
+    @Test
+    void testInitData() throws SQLException {
+        Connection connection = DBService.getConnectionFromCP();
+        Statement stmt = connection.createStatement();
+        ResultSet resultSet = stmt.executeQuery("SELECT COUNT(*) FROM employees");
+        assertTrue(resultSet.next());
+        assertEquals(14, resultSet.getInt(1));
+        connection.close();
     }
 
     @Test
@@ -90,7 +100,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    void ok() {
+    void testOk() {
         // visada OK :)
     }
 }

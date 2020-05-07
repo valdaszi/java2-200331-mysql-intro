@@ -57,6 +57,14 @@ public class DBService {
         }
     }
 
+    // 1 budas - gauname is DriverManager
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(
+                properties.getProperty("db.url"),
+                properties.getProperty("db.user"),
+                properties.getProperty("db.password"));
+    }
+
     private static DataSource dataSource;
     static {
         HikariConfig config = new HikariConfig();
@@ -73,14 +81,12 @@ public class DBService {
     }
 
 
+    // 2 budas - gauname is DataSource
+    // pastaba: dataSource turi buti singleton
+    // https://www.baeldung.com/java-singleton
+    // https://en.wikipedia.org/wiki/Singleton_pattern
     public static Connection getConnectionFromCP() throws SQLException {
         return dataSource.getConnection();
     }
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(
-                properties.getProperty("db.url"),
-                properties.getProperty("db.user"),
-                properties.getProperty("db.password"));
-    }
 }
