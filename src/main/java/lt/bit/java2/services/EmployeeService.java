@@ -25,6 +25,24 @@ public class EmployeeService {
         return null;
     }
 
+    public static Employee loadEmployee(int empNo) {
+        // TODO uzkrauti employee pagal jo id, t.y. emp_no
+        return null;
+    }
+
+    public static void saveEmployee(Employee employee) {
+        // TODO issaugoti employee pakeitimus DB
+    }
+
+    public static Employee createEmployee(Employee employee) {
+        // TODO naujo employee irasymas i DB
+        return null;
+    }
+
+    public static void deleteEmployee(Employee employee) {
+        // TODO triname employee su empNo is DB
+    }
+
 
     // SELECT * FROM employees  LIMIT 5 OFFSET 10
     // SELECT * FROM employees  LIMIT 10,5
