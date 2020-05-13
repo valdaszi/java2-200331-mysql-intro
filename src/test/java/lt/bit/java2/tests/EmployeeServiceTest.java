@@ -20,10 +20,20 @@ public class EmployeeServiceTest extends DBTestBase {
     @Test
     void testInitData() throws SQLException {
         Connection connection = DBService.getConnectionFromCP();
+
         Statement stmt = connection.createStatement();
         ResultSet resultSet = stmt.executeQuery("SELECT COUNT(*) FROM employees");
         assertTrue(resultSet.next());
         assertEquals(14, resultSet.getInt(1));
+
+        resultSet = stmt.executeQuery("SELECT COUNT(*) FROM salaries WHERE emp_no = 11");
+        assertTrue(resultSet.next());
+        assertEquals(2, resultSet.getInt(1));
+
+        resultSet = stmt.executeQuery("SELECT COUNT(*) FROM salaries WHERE emp_no = 12");
+        assertTrue(resultSet.next());
+        assertEquals(3, resultSet.getInt(1));
+
         connection.close();
     }
 
@@ -74,6 +84,7 @@ public class EmployeeServiceTest extends DBTestBase {
     @Test
     void testDelete() {
         Employee employee = EmployeeService.loadEmployee(3);
+        assertNotNull(employee);
         EmployeeService.deleteEmployee(employee);
 
         employee = EmployeeService.loadEmployee(3);
@@ -84,4 +95,5 @@ public class EmployeeServiceTest extends DBTestBase {
     void testOk() {
         // visada OK :)
     }
+
 }

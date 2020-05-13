@@ -4,9 +4,8 @@ import lt.bit.java2.services.DBService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.time.LocalDate;
 
 public class DBTestBase {
 
@@ -27,18 +26,29 @@ public class DBTestBase {
                         " birth_date date," +
                         " hire_date date" +
                         ")");
-        stmt.execute(
-                "insert into employees values" +
-                        " (1, 'A1', 'B1', 'F', '2000-01-01', '2018-03-01')," +
-                        " (2, 'A2', 'B2', 'M', '2000-01-02', '2018-03-02')," +
-                        " (3, 'A3', 'B3', 'F', '2000-01-03', '2018-03-03')," +
-                        " (4, 'A4', 'B4', 'M', '2000-01-04', '2018-03-04')," +
-                        " (5, 'A5', 'B5', 'F', '2000-01-05', '2018-03-05')," +
-                        " (6, 'A6', 'B6', 'M', '2000-01-06', '2018-03-06')"
-                // TODO pabaigti
+//        stmt.execute(
+//                "insert into employees values" +
+//                        " (1, 'A1', 'B1', 'F', '2000-01-01', '2018-03-01')," +
+//                        " (2, 'A2', 'B2', 'M', '2000-01-02', '2018-03-02')," +
+//                        " (3, 'A3', 'B3', 'F', '2000-01-03', '2018-03-03')," +
+//                        " (4, 'A4', 'B4', 'M', '2000-01-04', '2018-03-04')," +
+//                        " (5, 'A5', 'B5', 'F', '2000-01-05', '2018-03-05')," +
+//                        " (6, 'A6', 'B6', 'M', '2000-01-06', '2018-03-06')"
+//                // TODO pabaigti
+//
+//        );
 
-        );
-//        stmt.execute("drop table if exists salaries");
+        PreparedStatement insertEmployeesStmt = connection.prepareStatement("insert into employees values(?,?,?,?,?,?)");
+        for (int i = 0; i < 14; i++) {
+            insertEmployeesStmt.setInt(1, i);
+            insertEmployeesStmt.setString(2, "A" + i);
+            insertEmployeesStmt.setString(3, "B" + i);
+            insertEmployeesStmt.setString(4, i % 2 == 0 ? "M" : "F");
+            insertEmployeesStmt.setDate(5, Date.valueOf(LocalDate.of(2000, 1, i + 1)));
+            insertEmployeesStmt.setDate(5, Date.valueOf(LocalDate.of(2000, 3, i + 1)));
+            insertEmployeesStmt.executeUpdate();
+        }
+
         stmt.execute(
                 "create table salaries (" +
                         " emp_no int," +
@@ -49,14 +59,13 @@ public class DBTestBase {
         stmt.execute(
                 "insert into salaries values" +
                         " (1, '2018-03-01', '9999-01-01', 1500)," +
-                        " (3, '2018-03-03', '2018-04-01', 1000)," +
-                        " (3, '2018-04-01', '9999-01-01', 2000)," +
-                        " (4, '2018-03-04', '2018-05-01', 1100)," +
-                        " (4, '2018-05-01', '2020-02-15', 1200)," +
-                        " (4, '2020-02-15', '9999-01-01', 1300)," +
-                        " (5, '2018-03-05', '9999-01-01', 1111)"
-                // TODO pabaigti
+                        " (11, '2018-03-03', '2018-04-01', 1000)," +
+                        " (11, '2018-04-01', '9999-01-01', 2000)," +
+                        " (12, '2018-03-04', '2018-05-01', 1100)," +
+                        " (12, '2018-05-01', '2020-02-15', 1200)," +
+                        " (12, '2020-02-15', '9999-01-01', 1300)"
         );
+
         connection.close();
     }
 
